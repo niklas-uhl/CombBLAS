@@ -3978,8 +3978,13 @@ FullyDistVec<IT,std::array<char, MAXVERTNAME> > SpParMat< IT,NT,DER >::ReadGener
 }
 
 template <class IT, class NT, class DER>
-template <typename _BinaryOperation>
-void SpParMat<IT,NT,DER>::ReadFromLocalEdgeList(std::vector<std::tuple<IT, IT, NT>> const& local_edge_list, _BinaryOperation BinOp) {
+template <typename EdgeList, typename _BinaryOperation>
+void SpParMat<IT, NT, DER>::ReadFromLocalEdgeList(
+    EdgeList const &local_edge_list, _BinaryOperation BinOp)
+  requires std::ranges::forward_range<EdgeList> &&
+           std::same_as<std::ranges::range_value_t<EdgeList>,
+                        std::tuple<IT, IT, NT>>
+{
   using LIT = DER::LocalIT;
   IT max_vertex_id = 0;
   for (const auto& edge : local_edge_list) {

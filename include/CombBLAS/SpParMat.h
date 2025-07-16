@@ -286,15 +286,23 @@ public:
     template <typename _BinaryOperation>
     FullyDistVec<IT,std::array<char, MAXVERTNAME>> ReadGeneralizedTuples(const std::string&, _BinaryOperation);
 
-    template <typename _BinaryOperation>
-    void ReadFromLocalEdgeList(std::vector<std::tuple<IT, IT, NT>> const& local_edge_list, _BinaryOperation);
-    
-	template <class HANDLER>
-	void ReadDistribute (const std::string & filename, int master, bool nonum, HANDLER handler, bool transpose = false, bool pario = false);
-	void ReadDistribute (const std::string & filename, int master, bool nonum=false, bool pario = false) 
-	{ 
-		ReadDistribute(filename, master, nonum, ScalarReadSaveHandler(), false, pario); 
-	}
+    template <typename EdgeList, typename _BinaryOperation>
+    void ReadFromLocalEdgeList(
+        EdgeList const &local_edge_list,
+        _BinaryOperation)
+      requires std::ranges::forward_range<EdgeList> &&
+               std::same_as<std::ranges::range_value_t<EdgeList>,
+                            std::tuple<IT, IT, NT>>;
+
+    template <class HANDLER>
+    void ReadDistribute(const std::string &filename, int master, bool nonum,
+                        HANDLER handler, bool transpose = false,
+                        bool pario = false);
+    void ReadDistribute(const std::string &filename, int master,
+                        bool nonum = false, bool pario = false) {
+      ReadDistribute(filename, master, nonum, ScalarReadSaveHandler(), false,
+                     pario);
+    }
 
 	template <class HANDLER>
 	void SaveGathered(std::string filename, HANDLER handler, bool transpose = false) const;
