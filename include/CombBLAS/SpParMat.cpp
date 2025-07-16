@@ -3977,7 +3977,29 @@ FullyDistVec<IT,std::array<char, MAXVERTNAME> > SpParMat< IT,NT,DER >::ReadGener
     return distmapper; 
 }
 
+template <class IT, class NT, class DER>
+template <typename _BinaryOperation>
+void SpParMat<IT,NT,DER>::ReadFromLocalEdgeList(std::vector<std::tuple<IT, IT, NT>> const& local_edge_list, _BinaryOperation BinOp) {
+  using LIT = DER::LocaIT;
+  IT max_vertex_id = 0;
+  for (const auto& edge : local_edge_list) {
+    max_vertex_id = std::max(max_vertex_id, std::get<0>(edge));
+    max_vertex_id = std::max(max_vertex_id, std::get<1>(edge));
+  };
+  MPI_Allreduce(MPI_IN_PLACE, &max_vertex_id, 1, MPIType<IT>(), MPI_MAX, commGrid->commWorld);
+  IT total_size = max_vertex_id + 1; // assuming vertices are labeled from 0 to max_vertex_id
 
+  std::vector<std::vector<std::tuple<LIT,LIT,NT>>> data(commGrid->GetSize());
+  for(auto const& [src, dst, val] : local_edge_list) {
+    LIT lrow, lcol;
+    int owner = Owner(total_size, total_size, src, dst, lrow, lcol);
+    data[owner].emplace_back(lrow, lcol, val);
+  }
+  if(spSeq) {
+    delete spSeq;
+  }
+  SparseCommon(data, local_edge_list.size(), total_size, total_size, BinOp);
+}
 
 //! Handles all sorts of orderings, even duplicates (what happens to them is determined by BinOp)
 //! Requires proper matrix market banner at the moment

@@ -285,6 +285,9 @@ public:
     
     template <typename _BinaryOperation>
     FullyDistVec<IT,std::array<char, MAXVERTNAME>> ReadGeneralizedTuples(const std::string&, _BinaryOperation);
+
+    template <typename _BinaryOperation>
+    void ReadFromLocalEdgeList(std::vector<std::tuple<IT, IT, NT>> const& local_edge_list, _BinaryOperation);
     
 	template <class HANDLER>
 	void ReadDistribute (const std::string & filename, int master, bool nonum, HANDLER handler, bool transpose = false, bool pario = false);
