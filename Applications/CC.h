@@ -1386,9 +1386,9 @@ namespace combblas {
         cclabel = parent;
         cclabel.ApplyInd([](IT val, IT ind){return val==ind ? -1 : val;});
         
-        FullyDistSpVec<IT, IT> roots (cclabel, bind2nd(std::equal_to<IT>(), -1));
+        FullyDistSpVec<IT, IT> roots (cclabel, bind(std::equal_to<IT>(), std::placeholders::_1, -1));
         // parents of leaves are still correct
-        FullyDistSpVec<IT, IT> pOfLeaves (cclabel, bind2nd(std::not_equal_to<IT>(), -1));
+        FullyDistSpVec<IT, IT> pOfLeaves (cclabel, bind(std::not_equal_to<IT>(),std::placeholders::_1, -1));
         
         roots.nziota(0);
         cclabel.Set(roots);

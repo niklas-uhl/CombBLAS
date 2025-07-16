@@ -25,6 +25,7 @@
 #include <iostream>
 #include <algorithm>
 #include <limits.h>
+#include <atomic>
 
 #if defined(__APPLE__)
 #define PTCMPXCH "  cmpxchgl %2,%1\n"
@@ -99,30 +100,32 @@ inline unsigned int hash2(unsigned int a)
 
 // compare and swap on 8 byte quantities
 inline bool LCAS(long *ptr, long oldv, long newv) {
-  unsigned char ret;
-  /* Note that sete sets a 'byte' not the word */
-  __asm__ __volatile__ (
-                "  lock\n"
-                "  cmpxchgq %2,%1\n"
-                "  sete %0\n"
-                : "=q" (ret), "=m" (*ptr)
-                : "r" (newv), "m" (*ptr), "a" (oldv)
-                : "memory");
-  return ret;
+  return std::atomic_ref<long>(*ptr).compare_exchange_strong(oldv, newv);
+  // unsigned char ret;
+  // /* Note that sete sets a 'byte' not the word */
+  // __asm__ __volatile__ (
+  //               "  lock\n"
+  //               "  cmpxchgq %2,%1\n"
+  //               "  sete %0\n"
+  //               : "=q" (ret), "=m" (*ptr)
+  //               : "r" (newv), "m" (*ptr), "a" (oldv)
+  //               : "memory");
+  // return ret;
 }
 
 // compare and swap on 4 byte quantity
 inline bool SCAS(int *ptr, int oldv, int newv) {
-  unsigned char ret;
-  /* Note that sete sets a 'byte' not the word */
-  __asm__ __volatile__ (
-                "  lock\n"
-                "  cmpxchgl %2,%1\n"
-                "  sete %0\n"
-                : "=q" (ret), "=m" (*ptr)
-                : "r" (newv), "m" (*ptr), "a" (oldv)
-                : "memory");
-  return ret;
+  return std::atomic_ref<int>(*ptr).compare_exchange_strong(oldv, newv);
+  // unsigned char ret;
+  // /* Note that sete sets a 'byte' not the word */
+  // __asm__ __volatile__ (
+  //               "  lock\n"
+  //               "  cmpxchgl %2,%1\n"
+  //               "  sete %0\n"
+  //               : "=q" (ret), "=m" (*ptr)
+  //               : "r" (newv), "m" (*ptr), "a" (oldv)
+  //               : "memory");
+  // return ret;
 }
 
 // The conditional should be removed by the compiler

@@ -67,6 +67,9 @@ struct mypair
 		val = make_pair(1,-1);
 	}
 	pair<double, double> val;
+  bool operator<(const mypair& other) const {
+    return val < other.val;
+  }
 };
 
 
@@ -135,8 +138,8 @@ int main(int argc, char* argv[])
 		vec1.ReadDistribute(inputvec1, 0);
 		vec2.ReadDistribute(inputvec2, 0);
 
-		vec1.Apply(bind2nd(minus<int64_t>(), 1));	// For 0-based indexing
-		vec2.Apply(bind2nd(minus<int64_t>(), 1));	
+		vec1.Apply(bind(minus<int64_t>(), std::placeholders::_1, 1));	// For 0-based indexing
+		vec2.Apply(bind(minus<int64_t>(), std::placeholders::_1,1));	
 
 		PARDBMAT Atemp = A;
 		Atemp.Prune(vec1, vec2);

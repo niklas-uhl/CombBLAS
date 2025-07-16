@@ -93,8 +93,8 @@ void removeIsolated(PSpMat_Bool & A)
      */
     
     // this steps for bipartite graph
-    nonisoColV = ColSums->FindInds(bind2nd(greater<int64_t>(), 0));
-    nonisoRowV = RowSums->FindInds(bind2nd(greater<int64_t>(), 0));
+    nonisoColV = ColSums->FindInds(bind(greater<int64_t>(), std::placeholders::_1, 0));
+    nonisoRowV = RowSums->FindInds(bind(greater<int64_t>(), std::placeholders::_1, 0));
     delete ColSums;
     delete RowSums;
     
