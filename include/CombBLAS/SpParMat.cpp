@@ -3980,7 +3980,7 @@ FullyDistVec<IT,std::array<char, MAXVERTNAME> > SpParMat< IT,NT,DER >::ReadGener
 template <class IT, class NT, class DER>
 template <typename _BinaryOperation>
 void SpParMat<IT,NT,DER>::ReadFromLocalEdgeList(std::vector<std::tuple<IT, IT, NT>> const& local_edge_list, _BinaryOperation BinOp) {
-  using LIT = DER::LocaIT;
+  using LIT = DER::LocalIT;
   IT max_vertex_id = 0;
   for (const auto& edge : local_edge_list) {
     max_vertex_id = std::max(max_vertex_id, std::get<0>(edge));
