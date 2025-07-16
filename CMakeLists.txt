@@ -2,26 +2,27 @@ cmake_minimum_required(VERSION 3.23)
 project(CombBLAS VERSION 2.0.1 LANGUAGES C CXX)
 
 # require c++14
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED YES)
-set(CMAKE_CXX_EXTENSIONS OFF)
+# set(CMAKE_CXX_STANDARD 20)
+# set(CMAKE_CXX_STANDARD_REQUIRED YES)
+# set(CMAKE_CXX_EXTENSIONS OFF)
 #set(CMAKE_BUILD_TYPE Debug)
 
 #set(CMAKE_BUILD_TYPE Release)
 
-set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address")
-set(CMAKE_CXX_FLAGS_RELEASE "-O3")
+#set(CMAKE_CXX_FLAGS_DEBUG "-g -fsanitize=address")
+#set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 # Main CombBLAS library
 add_library(CombBLAS src/CommGrid.cpp src/mmio.c src/MPIType.cpp src/MPIOp.cpp src/MemoryPool.cpp src/hash.cpp)
+target_compile_features(CombBLAS PUBLIC cxx_std_20)
 
-# require c++14 in CombBLAS interface
-if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES) # Use language feature if available (CMake >= 3.8)
-  target_compile_features(CombBLAS PUBLIC cxx_std_14)
-else()
-  # Use C++14-specific features for CMake >= 3.3, which will force the appropriate language level flags.
-  target_compile_features(CombBLAS PUBLIC cxx_return_type_deduction)
-endif()
+# # require c++14 in CombBLAS interface
+# if("cxx_std_14" IN_LIST CMAKE_CXX_COMPILE_FEATURES) # Use language feature if available (CMake >= 3.8)
+#   target_compile_features(CombBLAS PUBLIC cxx_std_14)
+# else()
+#   # Use C++14-specific features for CMake >= 3.3, which will force the appropriate language level flags.
+#   target_compile_features(CombBLAS PUBLIC cxx_return_type_deduction)
+# endif()
 
 # set include directories
 target_include_directories(CombBLAS PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> $<INSTALL_INTERFACE:include>)
