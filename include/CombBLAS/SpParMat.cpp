@@ -3998,7 +3998,7 @@ void SpParMat<IT,NT,DER>::ReadFromLocalEdgeList(std::vector<std::tuple<IT, IT, N
   if(spSeq) {
     delete spSeq;
   }
-  SparseCommon(data, local_edge_list.size(), total_size, total_size, BinOp);
+  SparseCommon(data, static_cast<LIT>(local_edge_list.size()), total_size, total_size, BinOp);
 }
 
 //! Handles all sorts of orderings, even duplicates (what happens to them is determined by BinOp)
