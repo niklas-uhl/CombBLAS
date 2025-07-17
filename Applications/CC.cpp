@@ -193,7 +193,7 @@ int main(int argc, char* argv[])
         SpParHelper::Print(outs.str());
         double t1 = MPI_Wtime();
         int64_t nCC = 0;
-        FullyDistVec<int64_t, int64_t> cclabels = CC(A, nCC);
+        FullyDistVec<int64_t, int64_t> cclabels = lacc::CC(A, nCC);
         
         double t2 = MPI_Wtime();
         string outname = ifilename + ".components";

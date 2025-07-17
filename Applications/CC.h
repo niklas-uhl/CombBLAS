@@ -57,7 +57,7 @@ using namespace std;
  ** Connected components based on Awerbuch-Shiloach algorithm
  **/
 
-namespace combblas {
+namespace combblas::lacc {
     
     template <typename T1, typename T2>
     struct Select2ndMinSR

@@ -20,7 +20,7 @@
  ** Connected components based on Shiloach-Vishkin algorithm
  **/
 
-namespace combblas {
+namespace combblas::fastsv {
 
 template <typename T1, typename T2>
 struct Select2ndMinSR

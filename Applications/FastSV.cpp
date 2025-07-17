@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
         double t1 = MPI_Wtime();
 
         Int nCC = 0;
-        FullyDistVec<Int, Int> cclabels = SV(A, nCC);
+        FullyDistVec<Int, Int> cclabels = fastsv::SV(A, nCC);
 
         double t2 = MPI_Wtime();
         //outs.str("");
