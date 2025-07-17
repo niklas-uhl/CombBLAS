@@ -293,6 +293,14 @@ public:
       requires std::ranges::forward_range<EdgeList> &&
                std::same_as<std::ranges::range_value_t<EdgeList>,
                             std::tuple<IT, IT, NT>>;
+  template <typename EdgeList, typename _BinaryOperation>
+    void ReadFromLocalEdgeList(
+        EdgeList const &local_edge_list,
+	IT total_size,
+        _BinaryOperation)
+      requires std::ranges::forward_range<EdgeList> &&
+               std::same_as<std::ranges::range_value_t<EdgeList>,
+                            std::tuple<IT, IT, NT>>;
 
     template <class HANDLER>
     void ReadDistribute(const std::string &filename, int master, bool nonum,

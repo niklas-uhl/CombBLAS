@@ -8,6 +8,16 @@ ADD_EXECUTABLE( fmis FilteredMIS.cpp )
 ADD_EXECUTABLE( mcl MCL.cpp )
 ADD_EXECUTABLE( betwcent BetwCent.cpp )
 ADD_EXECUTABLE( lacc CC.cpp)
+add_library(lacc-lib INTERFACE)
+target_sources(lacc-lib INTERFACE
+  FILE_SET HEADERS
+  FILES
+  CC.h
+)
+target_link_libraries(lacc-lib INTERFACE CombBLAS)
+target_link_libraries(lacc-lib INTERFACE CombBLAS)
+target_link_libraries(lacc PRIVATE lacc-lib)
+
 ADD_EXECUTABLE( fastsv FastSV.cpp)
 add_library(fastsv-lib INTERFACE)
 target_sources(fastsv-lib INTERFACE
@@ -24,7 +34,6 @@ TARGET_LINK_LIBRARIES( fbfs CombBLAS)
 TARGET_LINK_LIBRARIES( fmis CombBLAS)
 TARGET_LINK_LIBRARIES( mcl CombBLAS)
 TARGET_LINK_LIBRARIES( betwcent CombBLAS)
-TARGET_LINK_LIBRARIES( lacc CombBLAS)
 
 
 ADD_TEST(NAME BetwCent_Test COMMAND ${MPIEXEC} ${MPIEXEC_NUMPROC_FLAG} 4 $<TARGET_FILE:betwcent> ../TESTDATA/SCALE16BTW-TRANSBOOL/ 10 96 )

@@ -3993,6 +3993,18 @@ void SpParMat<IT, NT, DER>::ReadFromLocalEdgeList(
   };
   MPI_Allreduce(MPI_IN_PLACE, &max_vertex_id, 1, MPIType<IT>(), MPI_MAX, commGrid->commWorld);
   IT total_size = max_vertex_id + 1; // assuming vertices are labeled from 0 to max_vertex_id
+  ReadFromLocalEdgeList(local_edge_list, total_size, BinOp);
+}
+
+template <class IT, class NT, class DER>
+template <typename EdgeList, typename _BinaryOperation>
+void SpParMat<IT, NT, DER>::ReadFromLocalEdgeList(
+                                                  EdgeList const &local_edge_list, IT total_size, _BinaryOperation BinOp)
+  requires std::ranges::forward_range<EdgeList> &&
+           std::same_as<std::ranges::range_value_t<EdgeList>,
+                        std::tuple<IT, IT, NT>>
+{
+  using LIT = DER::LocalIT;
 
   std::vector<std::vector<std::tuple<LIT,LIT,NT>>> data(commGrid->GetSize());
   for(auto const& [src, dst, val] : local_edge_list) {
