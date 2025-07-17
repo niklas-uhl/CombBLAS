@@ -1413,7 +1413,7 @@ namespace combblas::lacc {
         std::ostringstream outs;
         
         // isolated vertices are marked as converged
-        FullyDistVec<int64_t,double> degree = A.Reduce(Column, plus<double>(), 0.0, [](double val){return 1.0;});
+        FullyDistVec<IT,double> degree = A.Reduce(Column, plus<double>(), 0.0, [](double val){return 1.0;});
         stars.EWiseApply(degree, [](short isStar, double degree){return degree == 0.0? CONVERGED: isStar;});
         
         int nthreads = 1;
