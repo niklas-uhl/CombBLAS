@@ -35,6 +35,7 @@
 #include <map>
 #include <mpi.h>
 #include <stdint.h>
+#include "./builtin_types.hpp"
 
 namespace combblas {
 
@@ -102,21 +103,23 @@ public:
 extern MPIDataTypeCache mpidtc;	// global variable
 // Global variables have program scope, which means they can be accessed everywhere in the program, and they are only destroyed when the program ends.
 
-template <typename T> 
-MPI_Datatype MPIType ( void )
-{
-	std::type_info const* t = &typeid(T);
-	MPI_Datatype datatype = mpidtc.get(t);
+template <typename T>
+MPI_Datatype MPIType(void) {
+  if constexpr (kamping::is_builtin_type_v<T>) {
+    return kamping::builtin_type<T>::data_type();
+  } else {
+    std::type_info const* t = &typeid(T);
+    MPI_Datatype datatype = mpidtc.get(t);
 
-	if (datatype == MPI_DATATYPE_NULL) 
-	{
-		MPI_Type_contiguous(sizeof(T), MPI_CHAR, &datatype );
-		MPI_Type_commit(&datatype);
-		int myrank;
-		MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
-		mpidtc.set(t, datatype);
-	}
-   	return datatype;
+    if (datatype == MPI_DATATYPE_NULL) {
+      MPI_Type_contiguous(sizeof(T), MPI_CHAR, &datatype);
+      MPI_Type_commit(&datatype);
+      int myrank;
+      MPI_Comm_rank(MPI_COMM_WORLD, &myrank);
+      mpidtc.set(t, datatype);
+    }
+    return datatype;
+  }
 };
 
 template<> MPI_Datatype MPIType< signed char >( void );
