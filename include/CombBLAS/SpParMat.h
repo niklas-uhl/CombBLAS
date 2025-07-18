@@ -110,11 +110,11 @@ public:
 	template <typename _BinaryOperation>
 	void DimApply(Dim dim, const FullyDistVec<IT, NT>& v, _BinaryOperation __binary_op);
 
-	template <typename _BinaryOperation, typename _UnaryOperation >	
-	FullyDistVec<IT,NT> Reduce(Dim dim, _BinaryOperation __binary_op, NT id, _UnaryOperation __unary_op) const;
+  template <typename VT, typename _BinaryOperation, typename _UnaryOperation >	
+	FullyDistVec<IT,VT> Reduce(Dim dim, _BinaryOperation __binary_op, VT id, _UnaryOperation __unary_op) const;
 
-	template <typename _BinaryOperation>	
-	FullyDistVec<IT,NT> Reduce(Dim dim, _BinaryOperation __binary_op, NT id) const;
+  template <typename VT, typename _BinaryOperation>	
+	FullyDistVec<IT,VT> Reduce(Dim dim, _BinaryOperation __binary_op, VT id) const;
     
 	template <typename VT, typename GIT, typename _BinaryOperation, typename _UnaryOperation >	
 	void Reduce(FullyDistVec<GIT,VT> & rvec, Dim dim, _BinaryOperation __binary_op, VT id, _UnaryOperation __unary_op) const;

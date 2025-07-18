@@ -884,8 +884,8 @@ void SpParMat<IT,NT,DER>::DimApply(Dim dim, const FullyDistVec<IT, NT>& x, _Bina
 }
 
 template <class IT, class NT, class DER>
-template <typename _BinaryOperation, typename _UnaryOperation >	
-FullyDistVec<IT,NT> SpParMat<IT,NT,DER>::Reduce(Dim dim, _BinaryOperation __binary_op, NT id, _UnaryOperation __unary_op) const
+template <typename VT, typename _BinaryOperation, typename _UnaryOperation >	
+FullyDistVec<IT,VT> SpParMat<IT,NT,DER>::Reduce(Dim dim, _BinaryOperation __binary_op, VT id, _UnaryOperation __unary_op) const
 {
     IT length;
     switch(dim)
@@ -906,14 +906,14 @@ FullyDistVec<IT,NT> SpParMat<IT,NT,DER>::Reduce(Dim dim, _BinaryOperation __bina
             break;
         }
     }
-	FullyDistVec<IT,NT> parvec(commGrid, length, id);
+	FullyDistVec<IT,VT> parvec(commGrid, length, id);
 	Reduce(parvec, dim, __binary_op, id, __unary_op);			
 	return parvec;
 }
 
 template <class IT, class NT, class DER>
-template <typename _BinaryOperation>	
-FullyDistVec<IT,NT> SpParMat<IT,NT,DER>::Reduce(Dim dim, _BinaryOperation __binary_op, NT id) const
+template <typename VT, typename _BinaryOperation>	
+FullyDistVec<IT,VT> SpParMat<IT,NT,DER>::Reduce(Dim dim, _BinaryOperation __binary_op, VT id) const
 {
     IT length;
     switch(dim)
@@ -934,8 +934,8 @@ FullyDistVec<IT,NT> SpParMat<IT,NT,DER>::Reduce(Dim dim, _BinaryOperation __bina
             break;
         }
     }
-	FullyDistVec<IT,NT> parvec(commGrid, length, id);
-	Reduce(parvec, dim, __binary_op, id, myidentity<NT>()); // myidentity<NT>() is a no-op function
+	FullyDistVec<IT,VT> parvec(commGrid, length, id);
+	Reduce(parvec, dim, __binary_op, id, myidentity<VT>()); // myidentity<NT>() is a no-op function
 	return parvec;
 }
 
