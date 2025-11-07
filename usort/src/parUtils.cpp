@@ -174,7 +174,7 @@ namespace par {
     
     delete [] ranksIdle;
     ranksIdle = NULL;
-
+    return 0;
   }//end function
 
   int splitCommUsingSplittingRank(int splittingRank, MPI_Comm* new_comm,
@@ -218,7 +218,7 @@ namespace par {
     
     delete [] ranksIdle;
     ranksIdle = NULL;
-
+    return 0;
   }//end function
 
   //create Comm groups and remove empty processors...
