@@ -13,6 +13,7 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <kamping/measurements/timer.hpp>
 #include "CombBLAS/CombBLAS.h"
 #include "CombBLAS/SpHelper.h"
 
@@ -343,6 +344,7 @@ FullyDistVec<IT, IT> SV(SpParMat<IT,NT,DER> & A, IT & nCC)
     FullyDistVec<IT, IT> mod(D.getcommgrid(), A.getnrow(), 1);
     IT diff = D.TotalLength();
     for (int iter = 1; diff != 0; iter++) {
+        kamping::measurements::timer().start("hooking");
         if (diff * 50 > A.getnrow()) {
             mngp = SpMV<Select2ndMinSR<NT, IT> >(A, gp); // minimum of neighbors' grandparent
         } else {
@@ -356,14 +358,25 @@ FullyDistVec<IT, IT> SV(SpParMat<IT,NT,DER> & A, IT & nCC)
             mngp.EWiseApply(hooks, BinaryMin<IT>(),
                     [](IT a, IT b){ return true; }, false, A.getnrow());
         }
+        kamping::measurements::timer().stop_and_append();
+
+        kamping::measurements::timer().start("assign_hook");
         FullyDistSpVec<IT, IT> finalhooks = Assign(D, mngp);
         D.Set(finalhooks);
         D.EWiseApply(gp, BinaryMin<IT>());
         D.EWiseApply(mngp, BinaryMin<IT>());
+        kamping::measurements::timer().stop_and_append();
+
+        kamping::measurements::timer().start("pointer_jump");
         gp = Extract(D, D);
+        kamping::measurements::timer().stop_and_append();
+
+        kamping::measurements::timer().start("convergence_check");
         dup.EWiseOut(gp, [](IT a, IT b) { return static_cast<IT>(a != b); }, mod);
         diff = static_cast<IT>(mod.Reduce(std::plus<IT>(), static_cast<IT>(0)));
         dup = gp;
+        kamping::measurements::timer().stop_and_append();
+
         char out[100];
         sprintf(out, "Iteration %d: diff %ld\n", iter, diff);
         SpParHelper::Print(out);

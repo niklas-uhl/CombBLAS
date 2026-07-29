@@ -26,6 +26,12 @@ target_sources(fastsv-lib INTERFACE
   FastSV.h
 )
 target_link_libraries(fastsv-lib INTERFACE CombBLAS)
+if(TARGET kamping::kamping)
+  # FastSV.h reports per-phase timings via kamping's measurement facility when
+  # this project is built as part of a superproject (e.g. KaCCv2) that
+  # provides kamping; standalone builds of this repo skip it.
+  target_link_libraries(fastsv-lib INTERFACE kamping::kamping)
+endif()
 TARGET_LINK_LIBRARIES(fastsv PRIVATE fastsv-lib)
 
 TARGET_LINK_LIBRARIES( tdbfs CombBLAS)
